@@ -13,16 +13,11 @@ return new class extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            // Relación con usuario (cliente)
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            // Relación con plan
-            $table->foreignId('plan_id')->constrained()->onDelete('cascade');
-            // Fecha de inicio y fin de la suscripción (opcional, depende de tu lógica)
+            $table->foreignId('plan_id')->nullable()->constrained()->onDelete('cascade');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            // Clases restantes en el mes actual (o ciclo actual)
             $table->integer('remaining_classes')->nullable();
-            // Estado de la suscripción
             $table->enum('status', ['active', 'inactive', 'canceled'])->default('active');
             $table->timestamps();
         });

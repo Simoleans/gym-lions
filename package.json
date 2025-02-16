@@ -20,7 +20,13 @@
     },
     "dependencies": {
         "@primevue/themes": "^4.2.5",
+        "chart.js": "^3.9.1",
         "lightgallery": "^2.8.2",
-        "primevue": "^4.2.5"
+        "lodash.debounce": "^4.0.8",
+        "primevue": "^4.2.5",
+        "sweetalert2": "^11.17.2",
+        "vue-chart-3": "^3.1.8",
+        "vue-qrcode-reader": "^5.7.1",
+        "vue-sweetalert2": "^5.0.11"
     }
 }

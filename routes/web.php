@@ -1,6 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\{
+    ProfileController,
+    UsersController,
+    AttendanceController
+};
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,6 +26,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    //users resources
+    Route::resource('users', UsersController::class);
 });
 
+//attendance create
+Route::get('/asistencias/escanear', [AttendanceController::class, 'create'])->name('attendance.create');
+Route::post('/asistencias/escanear', [AttendanceController::class, 'store'])->name('attendance.store');
 require __DIR__.'/auth.php';

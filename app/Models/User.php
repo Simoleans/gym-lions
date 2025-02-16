@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -24,7 +25,7 @@ class User extends Authenticatable
         'role',
         'phone',
         'allergy',
-
+        'id_number',
     ];
 
     /**
@@ -35,6 +36,13 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $appends = [
+        'is_moroso',
+        'attendance_count',
+        'plan_name',
+        'plan_personalizado',
     ];
 
     /**
@@ -50,6 +58,15 @@ class User extends Authenticatable
         ];
     }
 
+    //boot passqword is id_number
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            $user->password = Hash::make($user->id_number);
+        });
+    }
     /**
      * Relación con la tabla subscriptions
      * Un usuario (cliente) puede tener múltiples suscripciones a lo largo del tiempo
@@ -67,4 +84,81 @@ class User extends Authenticatable
     {
         return $this->hasMany(Attendance::class);
     }
+
+    public function scopeWhereRole($query, $role)
+    {
+        return $query->where('role', $role);
+    }
+
+    /**
+     * DÍAS RESTANTES de su suscripción activa
+     */
+
+
+    /**
+     * ¿ESTÁ MOROSO?
+     */
+    public function getIsMorosoAttribute()
+    {
+        $activeSubscription = $this->subscriptions()
+            ->where('status', 'active')
+            ->latest('start_date')
+            ->first();
+
+        if (!$activeSubscription) {
+            return true;
+        }
+
+        $endDate = \Carbon\Carbon::parse($activeSubscription->end_date);
+        return $endDate->isPast(); // true si ya pasó la fecha de vencimiento
+    }
+
+    /**
+     * CUÁNTOS DÍAS HA ASISTIDO
+     */
+    public function getAttendanceCountAttribute()
+    {
+        return $this->attendances()->count();
+    }
+
+    /**
+     * PLAN QUE TIENE EL USUARIO (si es personalizado o no)
+     */
+    public function getPlanNameAttribute()
+    {
+        $activeSubscription = $this->subscriptions()
+            ->where('status', 'active')
+            ->latest('start_date')
+            ->first();
+
+        if (!$activeSubscription) {
+            return 'Sin suscripción';
+        }
+
+        if (is_null($activeSubscription->plan_id)) {
+            return 'Personalizado (' . $activeSubscription->remaining_classes . ' clases)';
+        }
+
+        $plan = $activeSubscription->plan;
+        return $plan ? $plan->name : 'Plan no encontrado';
+    }
+
+    public function getPlanPersonalizadoAttribute()
+    {
+        $activeSubscription = $this->subscriptions()
+            ->where('status', 'active')
+            ->latest('start_date')
+            ->first();
+
+        if (!$activeSubscription) {
+            return false;
+        }
+
+        if (is_null($activeSubscription->plan_id)) {
+            return $activeSubscription->remaining_classes;
+        }
+
+        return false;
+    }
+
 }

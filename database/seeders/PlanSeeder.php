@@ -30,5 +30,6 @@ class PlanSeeder extends Seeder
             'classes_per_month' => 20,
             'price'             => 40.00,
         ]);
+
     }
 }
