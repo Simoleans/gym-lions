@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Carbon\Carbon;
 class Subscription extends Model
 {
     protected $fillable = [
@@ -14,6 +14,8 @@ class Subscription extends Model
         'remaining_classes',
         'status',
     ];
+
+    protected $appends = ['is_expired'];
 
     /**
      * Relación: la suscripción pertenece a un usuario
@@ -38,5 +40,16 @@ class Subscription extends Model
     {
         return $this->hasMany(Attendance::class);
     }
+
+    public function getIsExpiredAttribute()
+    {
+        if (is_null($this->plan_id)) {
+            return $this->remaining_classes !== null && $this->attendances()->count() >= $this->remaining_classes;
+        }
+
+        return $this->end_date ? Carbon::parse($this->end_date)->isPast() : false;
+    }
+
+
 
 }

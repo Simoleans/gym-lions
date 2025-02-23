@@ -12,6 +12,18 @@ class Attendance extends Model
         'attended_at',
     ];
 
+    protected $casts = [
+        'attended_at' => 'datetime',
+    ];
+
+    //boot
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            $model->attended_at = now();
+        });
+    }
     /**
      * Relación: la asistencia pertenece a un usuario
      */

@@ -3,6 +3,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import debounce from 'lodash.debounce';
+import Button from 'primevue/button';
+import ShowUser from './Components/ShowUser.vue';
+
 
 const props = defineProps({
     users: Object,
@@ -10,6 +13,9 @@ const props = defineProps({
 });
 
 const searchTerm = ref(props.filters.search || '');
+
+const open = ref(false);
+const user = ref(null);
 
 // Buscador con debounce para no saturar el servidor
 const searchUsers = debounce((value) => {
@@ -30,6 +36,17 @@ const changePage = (url) => {
         router.get(url, { search: searchTerm.value }, { preserveState: true, preserveScroll: true });
     }
 };
+
+const viewUser = (data) => {
+    console.log(data);
+    user.value = data;
+    open.value = true;
+
+}
+
+const closeModal = () => {
+    open.value = false;
+}
 </script>
 
 <template>
@@ -63,18 +80,19 @@ const changePage = (url) => {
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">ID</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Nombre</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Email</th>
+                                    <!-- <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Email</th> -->
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Teléfono</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Estado</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Asistencias</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Plan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"></th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                 <tr v-for="user in users.data" :key="user.id">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ user.id }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ user.name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ user.email }}</td>
+                                    <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ user.email }}</td> -->
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ user.phone ?? 'N/A' }}</td>
 
                                     <!-- Estado -->
@@ -103,6 +121,9 @@ const changePage = (url) => {
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
                                         {{ user.plan_name }}
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                                        <Button label="Ver" severity="success" @click="viewUser(user)" />
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -130,4 +151,5 @@ const changePage = (url) => {
             </div>
         </div>
     </AuthenticatedLayout>
+    <ShowUser :user="user" :open="open" @close="closeModal" />
 </template>

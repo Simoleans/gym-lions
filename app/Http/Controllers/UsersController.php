@@ -8,7 +8,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
-
+use Illuminate\Support\Str;
 class UsersController extends Controller
 {
     /**
@@ -55,7 +55,7 @@ class UsersController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'id_number' => 'required|unique:users,id_number',
+            'id_number' => 'unique:users,id_number',
             'phone' => 'nullable',
             'allergy' => 'nullable',
             'role' => 'nullable',
@@ -77,7 +77,7 @@ class UsersController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'id_number' => $request->id_number,
+                'id_number' => $request->id_number ?? Str::random(7),
                 'phone' => $request->phone,
                 'allergy' => $request->allergy,
                 'role' => $request->role

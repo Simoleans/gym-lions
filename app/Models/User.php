@@ -43,6 +43,7 @@ class User extends Authenticatable
         'attendance_count',
         'plan_name',
         'plan_personalizado',
+        'clases_restantes',
     ];
 
     /**
@@ -73,7 +74,7 @@ class User extends Authenticatable
      */
     public function subscriptions()
     {
-        return $this->hasMany(Subscription::class);
+        return $this->hasOne(Subscription::class);
     }
 
     /**
@@ -160,5 +161,18 @@ class User extends Authenticatable
 
         return false;
     }
+
+    /**
+     * CLASES RESTANTES si el plan es personalizado
+     */
+    public function getClasesRestantesAttribute()
+    {
+        if (!$this->plan_personalizado) {
+            return null;
+        }
+
+        return max($this->plan_personalizado - $this->attendance_count, 0);
+    }
+
 
 }

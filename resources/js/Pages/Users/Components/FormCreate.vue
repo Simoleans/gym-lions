@@ -37,7 +37,6 @@ import { computed } from 'vue';
 // Computed para validar el formulario
 const isFormValid = computed(() => {
     return (
-        form.id_number.trim() !== '' &&
         form.name.trim() !== '' &&
         form.email.trim() !== '' &&
         form.phone.trim() !== '' &&
@@ -87,7 +86,6 @@ const handleStore = () => {
                         type="text"
                         class="mt-1 block w-full"
                         v-model="form.id_number"
-                        required
                         autofocus
                         autocomplete="id_number"
                     />

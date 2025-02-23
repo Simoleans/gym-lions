@@ -10,6 +10,14 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import Button from 'primevue/button';
+import 'primeicons/primeicons.css'
+
+
+import VCalendar from 'v-calendar';
+import 'v-calendar/style.css';
+
+import vueQr from 'vue-qr/src/packages/vue-qr.vue'
+
 
 
 
@@ -26,6 +34,8 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
+            .use(VCalendar)
+            .use(vueQr)
             .use(PrimeVue,{
                 theme : {
                     preset : Aura
