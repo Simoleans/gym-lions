@@ -5,7 +5,7 @@ import { ref, watch } from 'vue';
 import debounce from 'lodash.debounce';
 import Button from 'primevue/button';
 import ShowUser from './Components/ShowUser.vue';
-
+import EditUser from './Components/EditUser.vue';
 
 const props = defineProps({
     users: Object,
@@ -16,6 +16,8 @@ const searchTerm = ref(props.filters.search || '');
 
 const open = ref(false);
 const user = ref(null);
+const editUserData = ref({});
+const modalEditUser = ref(false);
 
 // Buscador con debounce para no saturar el servidor
 const searchUsers = debounce((value) => {
@@ -46,6 +48,15 @@ const viewUser = (data) => {
 
 const closeModal = () => {
     open.value = false;
+}
+
+const openEditUser = (user) => {
+    editUserData.value = user;
+    modalEditUser.value = true;
+}
+
+const closeEditUser = () => {
+    modalEditUser.value = false;
 }
 </script>
 
@@ -151,5 +162,6 @@ const closeModal = () => {
             </div>
         </div>
     </AuthenticatedLayout>
-    <ShowUser :user="user" :open="open" @close="closeModal" />
+    <ShowUser :user="user" :open="open" @close="closeModal" @openEdit="openEditUser" />
+    <EditUser :user="editUserData" :open="modalEditUser" @close="closeEditUser" />
 </template>

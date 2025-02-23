@@ -1,6 +1,6 @@
 <template>
-    <Dialog v-model:visible="props.open" modal header="Renovar Plan" :style="{ width: '50vw' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" :position="'bottom'" :close="closeRenewSubscription">
-        <span class="text-surface-500 dark:text-surface-400 block mb-8">Renovar el plan de {{ user?.name }}.</span>
+    <Dialog v-model:visible="props.open" modal header="Renovar Suscripción" :style="{ width: '50vw' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" :position="'bottom'" :close="closeRenewSubscription">
+        <span class="text-surface-500 dark:text-surface-400 block mb-8">Renovar la suscripción de {{ user?.name }}.</span>
         <div class="col-span-2">
             <InputLabel value="Plan" class="mb-2" />
             <ul class="grid w-full gap-6 md:grid-cols-3">
@@ -30,7 +30,7 @@
                     </label>
                 </li>
 
-                <!-- Opción personalizada -->
+                <!-- personalizada -->
                 <li>
                     <input
                         type="radio"
@@ -94,10 +94,8 @@ const form = useForm({
 });
 
 const formatPrice = (price) => {
-
     const usdCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
     return usdCurrency.format(price);
-
 }
 
 watch(props.open, (newVal) => {
