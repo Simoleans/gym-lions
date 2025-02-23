@@ -143,4 +143,42 @@ class UsersController extends Controller
     {
         //
     }
+
+    public function renewSubscription(User $user, Request $request)
+    {
+        $subscription = $user->subscriptions->first();
+
+
+        if ($subscription->status !== 'inactive') {
+            return redirect()->back()->with('error', 'La suscripción aún está activa.');
+        }
+
+        if ($request->plan_id != 'custom') {
+            $plan = Plan::find($request->plan_id);
+
+            $subscription->update([
+                'plan_id' => $plan->id,
+                'start_date' => Carbon::now(),
+                'end_date' => Carbon::now()->addMonth(),
+                'status' => 'active',
+                'remaining_classes' => $plan->classes_per_month,
+                'status' => 'active',
+            ]);
+        } else {
+            // Renovar con un plan personalizado (sumar clases)
+            $newRemainingClasses = $subscription->remaining_classes + $request->remaining_classes;
+
+            $subscription->update([
+                'plan_id' => null,
+                'remaining_classes' => $newRemainingClasses,
+                'start_date' => Carbon::now(),
+                'end_date' => Carbon::now()->addMonth(),
+                'status' => 'active',
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Suscripción renovada exitosamente.');
+    }
+
+
 }

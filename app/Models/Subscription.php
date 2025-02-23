@@ -17,6 +17,17 @@ class Subscription extends Model
 
     protected $appends = ['is_expired'];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::retrieved(function ($subscription) {
+            if ($subscription->is_expired && $subscription->status === 'active') {
+                $subscription->update(['status' => 'inactive']);
+            }
+        });
+    }
+
     /**
      * Relación: la suscripción pertenece a un usuario
      */

@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
 
     //users resources
     Route::resource('users', UsersController::class);
+    Route::post('/users/{user}/renew-subscription', [UsersController::class, 'renewSubscription'])->name('users.renew-subscription');
 });
 
 //attendance create

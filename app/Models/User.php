@@ -44,6 +44,7 @@ class User extends Authenticatable
         'plan_name',
         'plan_personalizado',
         'clases_restantes',
+        'plans',
     ];
 
     /**
@@ -172,6 +173,12 @@ class User extends Authenticatable
         }
 
         return max($this->plan_personalizado - $this->attendance_count, 0);
+    }
+
+    //attr plans
+    public function getPlansAttribute()
+    {
+        return Plan::all();
     }
 
 

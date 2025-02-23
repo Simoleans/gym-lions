@@ -66,8 +66,6 @@
                                 />
 
                                 <button class="my-download-button" @click="downloadQr">Descargar QR</button>
-
-
                             </div>
 
                         </div>
@@ -106,7 +104,7 @@
                             </div>
                         </div>
 
-                        <button @click="renewPlan"
+                        <button @click="renewPlan(user)"
                             class="mt-4 w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg transition duration-300 shadow-md
                             sm:py-2 sm:px-3 sm:text-sm">
                             Renovar Plan
@@ -119,12 +117,18 @@
             </div>
         </div>
     </transition>
+
+    <RenewPlans :open="openRenewSubscription" :user="dataUser" @close="closeRenewSubscription" />
+
 </template>
 
 <script setup>
 import { ref, defineProps, defineEmits, onMounted, computed } from 'vue';
 import vueQr from 'vue-qr/src/packages/vue-qr.vue';
 import CalendarAttendance from './CalendarAttendance.vue';
+import RenewPlans from './RenewPlans.vue';
+import Dialog from 'primevue/dialog';
+
 
 import QRCodeVue3 from 'qrcode-vue3'
 
@@ -133,14 +137,35 @@ const props = defineProps({
     user: { type: Object, required: true },
 });
 
+const form = ref({
+    plan_id: null,
+    remaining_classes: null,
+});
+
 const emit = defineEmits(['close']);
 const isMobile = ref(false);
 const updateMobileView = () => isMobile.value = window.innerWidth <= 640;
 const handleClose = () => emit('close');
 
+const openRenewSubscription = ref(false);
+const dataUser = ref({});
+
 const toggleStatus = () => console.log(`Cambiando estado de usuario a: ${!props.user.status}`);
 const editUser = () => console.log("Editando usuario:", props.user);
-const renewPlan = () => console.log("Renovando plan para usuario:", props.user);
+
+const renewPlan = (user) => {
+    console.log("Renovando plan para usuario:", user);
+    openRenewSubscription.value = true;
+    dataUser.value = user;
+}
+
+const closeRenewSubscription = () => {
+    openRenewSubscription.value = false;
+}
+
+
+
+
 
 
 const containerTop = ref(0);
