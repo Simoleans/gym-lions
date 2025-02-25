@@ -29,7 +29,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'role' => 1,
             'id_number' => $this->faker->unique()->randomNumber(8),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' =>  Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
     }
